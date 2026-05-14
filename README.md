@@ -76,3 +76,8 @@ Na camada view, cada janela foi feita em JFrame, seguindo a ideia mostrada em au
 6. Conclusão
 O projeto FEItv reuniu conceitos POO, banco de dados e interface gráfica em uma aplicação única. A separação entre telas, controle, entre outros fatores, ajudaram a manter o código organizado e próximo do conteúdo visto em aula.
 Sob esse viés, o sistema entrega para o usuário as funções de: criar conta, entrar, procurar vídeos, reagir aos conteúdos(like e deslike) e montar suas próprias listas de reprodução. O projeto também serviu para praticar o uso de JFrame, JDBC, SQL e MVC em um cenário realista de aplicação.
+
+6. Diagrama do Projeto
+
+<img width="980" height="654" alt="image" src="https://github.com/user-attachments/assets/350b8d9f-5f53-4462-8f7f-71244426c0b4" />
+
