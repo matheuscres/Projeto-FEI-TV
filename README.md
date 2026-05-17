@@ -1,5 +1,4 @@
-# Projeto-FEI-TV
-
+FEItv - Relatório do Projeto
 Projeto da disciplina CCM310 - Arquitetura de Software e Programação Orientada a Objetos
 Nome: Matheus da Cunha Cres
 1. Introdução
@@ -30,33 +29,69 @@ CREATE TABLE videos (
     id SERIAL PRIMARY KEY,
     titulo VARCHAR(150) NOT NULL,
     descricao TEXT NOT NULL,
-    tipo VARCHAR(10) NOT NULL,
-    ano INT NOT NULL,
+    tipo VARCHAR(10) NOT NULL CHECK (tipo IN ('Filme', 'Série')),
+    ano INT NOT NULL CHECK (ano BETWEEN 1900 AND EXTRACT(YEAR FROM CURRENT_DATE)::INT),
     categoria VARCHAR(60) NOT NULL,
     detalhe VARCHAR(120) NOT NULL,
-    likes INT NOT NULL DEFAULT 0,
-    dislikes INT NOT NULL DEFAULT 0
+    likes INT NOT NULL DEFAULT 0 CHECK (likes >= 0),
+    dislikes INT NOT NULL DEFAULT 0 CHECK (dislikes >= 0)
 );
 
 CREATE TABLE playlists (
     id SERIAL PRIMARY KEY,
-    usuario_id INT NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
+    usuario_id INT NOT NULL,
     nome VARCHAR(100) NOT NULL,
-    UNIQUE (usuario_id, nome)
+    UNIQUE (usuario_id, nome),
+    CONSTRAINT fk_playlists_usuario
+        FOREIGN KEY (usuario_id)
+        REFERENCES usuarios(id)
+        ON DELETE CASCADE
 );
 
 CREATE TABLE playlist_videos (
-    playlist_id INT NOT NULL REFERENCES playlists(id) ON DELETE CASCADE,
-    video_id INT NOT NULL REFERENCES videos(id) ON DELETE CASCADE,
-    PRIMARY KEY (playlist_id, video_id)
+    playlist_id INT NOT NULL,
+    video_id INT NOT NULL,
+    PRIMARY KEY (playlist_id, video_id),
+    CONSTRAINT fk_playlist_videos_playlist
+        FOREIGN KEY (playlist_id)
+        REFERENCES playlists(id)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_playlist_videos_video
+        FOREIGN KEY (video_id)
+        REFERENCES videos(id)
+        ON DELETE CASCADE
 );
 
 CREATE TABLE reacoes (
-    usuario_id INT NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
-    video_id INT NOT NULL REFERENCES videos(id) ON DELETE CASCADE,
-    tipo CHAR(1) NOT NULL,
-    PRIMARY KEY (usuario_id, video_id)
+    usuario_id INT NOT NULL,
+    video_id INT NOT NULL,
+    tipo CHAR(1) NOT NULL CHECK (tipo IN ('L', 'D')),
+    PRIMARY KEY (usuario_id, video_id),
+    CONSTRAINT fk_reacoes_usuario
+        FOREIGN KEY (usuario_id)
+        REFERENCES usuarios(id)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_reacoes_video
+        FOREIGN KEY (video_id)
+        REFERENCES videos(id)
+        ON DELETE CASCADE
 );
+
+INSERT INTO videos (titulo, descricao, tipo, ano, categoria, detalhe, likes, dislikes) VALUES
+('Breaking Bad', 'Um professor de química passa a produzir metanfetamina.', 'Série', 2008, 'Drama', '5 temporadas', 0, 0),
+('Interstellar', 'Uma equipe viaja pelo espaço para salvar a humanidade.', 'Filme', 2014, 'Ficção Científica', 'Christopher Nolan', 0, 0),
+('Stranger Things', 'Um grupo de amigos enfrenta eventos sobrenaturais.', 'Série', 2016, 'Ficção', '4 temporadas', 0, 0),
+('The Dark Knight', 'Batman enfrenta o Coringa em Gotham.', 'Filme', 2008, 'Ação', 'DC Comics', 0, 0),
+('The Office', 'Comédia sobre o cotidiano de um escritório.', 'Série', 2005, 'Comédia', '9 temporadas', 0, 0),
+('Inception', 'Um ladrão invade sonhos para roubar segredos.', 'Filme', 2010, 'Ficção Científica', 'Christopher Nolan', 0, 0),
+('Friends', 'Seis amigos vivem situações engraçadas em Nova York.', 'Série', 1994, 'Comédia', '10 temporadas', 0, 0),
+('Avengers: Endgame', 'Os heróis restantes enfrentam Thanos pela última vez.', 'Filme', 2019, 'Ação', 'Marvel Studios', 0, 0),
+('Black Mirror', 'Série sobre os impactos da tecnologia na sociedade.', 'Série', 2011, 'Drama', 'Antologia', 0, 0),
+('Parasite', 'Uma família pobre se infiltra na casa de uma família rica.', 'Filme', 2019, 'Drama', 'Oscar de Melhor Filme', 0, 0),
+('Avatar', 'Uma expedição humana entra em conflito com os nativos de Pandora.', 'Filme', 2009, 'Ficção Científica', 'James Cameron', 0, 0),
+('The Witcher', 'Um caçador de monstros percorre um continente repleto de perigos.', 'Série', 2019, 'Fantasia', '3 temporadas', 0, 0);
+
+
 
 Os inserts iniciais servem para alimentar a tabela de vídeos e permitir testes de busca logo após a criação do banco. Assim, o sistema já abre com conteúdo disponível, sem depender de cadastro manual de todos os vídeos(já que essa funcionalidade só era pra ser feita, caso feito em dupla).
 
@@ -77,7 +112,7 @@ Na camada view, cada janela foi feita em JFrame, seguindo a ideia mostrada em au
 O projeto FEItv reuniu conceitos POO, banco de dados e interface gráfica em uma aplicação única. A separação entre telas, controle, entre outros fatores, ajudaram a manter o código organizado e próximo do conteúdo visto em aula.
 Sob esse viés, o sistema entrega para o usuário as funções de: criar conta, entrar, procurar vídeos, reagir aos conteúdos(like e deslike) e montar suas próprias listas de reprodução. O projeto também serviu para praticar o uso de JFrame, JDBC, SQL e MVC em um cenário realista de aplicação.
 
-6. Diagrama do Projeto
+7. Diagrama do Projeto
 
-<img width="980" height="654" alt="image" src="https://github.com/user-attachments/assets/350b8d9f-5f53-4462-8f7f-71244426c0b4" />
-
+ 
+![alt text](image.png)
